@@ -20,7 +20,7 @@ conda env create -f environment.yml -n opensim-nmd
 
 ## Data Access
 
-The dataset can be accessed from ==TODO==
+The dataset can be accessed from https://doi.org/10.5281/zenodo.13788592.
 
 In the top level of the code repository, create a soft link to the dataset. This can be done by running the line below with `[path_to_dataset]` replaced by an absolute or relative path to the downloaded data.
 

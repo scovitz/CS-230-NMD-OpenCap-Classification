@@ -1,7 +1,7 @@
 from pathlib import Path
 import pandas as pd
 
-datadir = Path('../../published_data/export_2024-09-09')
+datadir = Path('../datadir')
 featdir = Path('video_features')
 featdir.mkdir(exist_ok=True)
 

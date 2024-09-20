@@ -5,7 +5,7 @@ channels:
   - defaults
 dependencies:
   - ipywidgets=8.1.5
-  - jupyterlab=jupyterlab
+  - jupyterlab=4.2.5
   - matplotlib=3.8.4
   - numpy=1.21.6
   - opensim=4.4

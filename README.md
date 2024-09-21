@@ -14,7 +14,7 @@ This code has been tested on MacOS.
 
 2. Open a terminal and navigate to an empty working directory where you will download the code and data. Clone the GitHub repository and enter it:
 
-3. Initialize the conda environment for the repository and install all necessary dependencies:
+3. Initialize the conda environment for the repository:
 
 ```
 cd [path_to_empty_working_directory]

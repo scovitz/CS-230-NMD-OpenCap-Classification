@@ -15,12 +15,15 @@ This code has been tested on MacOS.
 
 2. Open a terminal in the directory where you wish to download the code. Clone the GitHub repository and enter it:
 
-3. Initialize the conda environment for the repository:
+3. Initialize the conda environment for the repository and install all necessary dependencies:
 
 ```
 git clone https://github.com/stanfordnmbl/opencap-fshd-dm-analysis.git
 cd opencap-fshd-dm-analysis
 conda env create -f environment.yml -n opensim-nmd
+conda activate opensim-nmd
+conda install -c bioconda snakemake
+conda install -c opensim-org opensim=4.4
 cd ..
 ```
 
@@ -62,8 +65,7 @@ unzip datadir/opencap_data.zip -d datadir
 The feature extraction pipeline uses the [snakemake](https://snakemake.github.io/). This is a Makefile-like tool that automates feature extraction across all of the activities. This may take 10 minutes to run or more depending on your machine. Use the lines below to run the pipeline. At any time, the pipeline can be halted by pressing `CTL-C`. When restarted, it snakemake will resume from where it left off.
 
 ```
-cd feature_extraction
-conda activate opensim-nmd
+cd opencap-fshd-dm-analysis/feature_extraction
 snakemake -c1
 ```
 
@@ -76,10 +78,11 @@ To reduce the verbosity of the terminal output,  add the `--quiet` flag.
 The code for figure generation code is in Jupyter notebooks. Use these commands to launch Jupyter Lab.
 
 ```
-cd feature_generation
-conda activate opensim-nmd
+cd ..
+cd figure_generation
 jupyter lab
 ```
+At this point, you will be able to select individual notebooks and run all cells to generate our figures. 
 
 Intraclass correlation is calculated in `fig3_icc.ipynb` by calling an R script from Python via a shell. On MacOS, the `Rscript` command can be acquired by installing [RStudio](https://posit.co/downloads/). If R is not available on the computer, an alternative is to run the `fig3_icc_no_Rscript.ipynb` file, which reads all of the ICC from a pre-computed CSV file.
 

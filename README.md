@@ -2,9 +2,10 @@ This repository contains the code required to replicate the results from the fol
 
 > **Video-based biomechanical analysis captures disease-specific movement signatures of different neuromuscular diseases**
 >
-> Parker S. Ruth\*, Scott D. Uhlrich\*, Constance de Monts, Antoine Falisse, Julie Muccini, Paxton Ataide, John Day, Tina Duong, Scott Delp
+> Parker S. Ruth\*, Scott D. Uhlrich\*, Constance de Monts, Antoine Falisse, Julie Muccini, Sydney Covitz, John Day, Tina Duong†, Scott Delp†
 >
 > \*Contributed equally
+> †Contributed equally
 
 This code has been tested on MacOS.
 

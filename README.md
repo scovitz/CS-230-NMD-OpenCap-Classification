@@ -22,8 +22,6 @@ git clone https://github.com/stanfordnmbl/opencap-fshd-dm-analysis.git
 cd opencap-fshd-dm-analysis
 conda env create -f environment.yml -n opensim-nmd
 conda activate opensim-nmd
-conda install -c bioconda snakemake
-conda install -c opensim-org opensim=4.4
 cd ..
 ```
 

@@ -17,4 +17,6 @@ dependencies:
   - shap
   - statsmodels
   - tqdm
+  - bioconda::snakemake
+  - opensim-org::opensim=4.4
 

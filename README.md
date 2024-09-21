@@ -17,7 +17,7 @@ This code has been tested on MacOS.
 3. Initialize the conda environment for the repository:
 
 ```
-git clone git@github.com:stanfordnmbl/opencap-fshd-dm-analysis.git
+git clone https://github.com/stanfordnmbl/opencap-fshd-dm-analysis.git
 cd opencap-fshd-dm-analysis
 conda env create -f environment.yml -n opensim-nmd
 cd ..

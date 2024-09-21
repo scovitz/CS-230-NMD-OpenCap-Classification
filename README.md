@@ -2,7 +2,7 @@ This repository contains the code required to replicate the results from the fol
 
 > **Video-based biomechanical analysis captures disease-specific movement signatures of different neuromuscular diseases**
 >
-> Parker S. Ruth\*, Scott D. Uhlrich\*, Constance de Monts, Antoine Falisse, Julie Muccini, Paxton Ataide, John Day, Tina Duong, Scott Delp
+> Parker S. Ruth\*, Scott D. Uhlrich\*, Constance de Monts, Antoine Falisse, Julie Muccini, Sydney Covitz, John Day, Tina Duong, Scott Delp
 >
 > \*Contributed equally
 
@@ -14,12 +14,15 @@ This code has been tested on MacOS.
 
 2. Open a terminal in the directory where you wish to download the code. Clone the GitHub repository and enter it:
 
-3. Initialize the conda environment for the repository:
+3. Initialize the conda environment for the repository and install all necessary dependencies:
 
 ```
-git clone git@github.com:stanfordnmbl/opencap-fshd-dm-analysis.git
+git clone https://github.com/stanfordnmbl/opencap-fshd-dm-analysis.git
 cd opencap-fshd-dm-analysis
 conda env create -f environment.yml -n opensim-nmd
+conda activate opensim-nmd
+conda install -c bioconda snakemake
+conda install -c opensim-org opensim=4.4
 cd ..
 ```
 
@@ -61,8 +64,7 @@ unzip datadir/opencap_data.zip -d datadir
 The feature extraction pipeline uses the [snakemake](https://snakemake.github.io/). This is a Makefile-like tool that automates feature extraction across all of the activities. This may take 10 minutes to run or more depending on your machine. Use the lines below to run the pipeline. At any time, the pipeline can be halted by pressing `CTL-C`. When restarted, it snakemake will resume from where it left off.
 
 ```
-cd feature_extraction
-conda activate opensim-nmd
+cd opencap-fshd-dm-analysis/feature_extraction
 snakemake -c1
 ```
 

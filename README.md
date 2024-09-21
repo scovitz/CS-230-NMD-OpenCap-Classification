@@ -13,11 +13,12 @@ This code has been tested on MacOS.
 
 1. Install the [(mini)conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/index.html) or [mamba](https://mamba.readthedocs.io/en/stable/installation/mamba-installation.html) Python environment manager.
 
-2. Open a terminal in the directory where you wish to download the code. Clone the GitHub repository and enter it:
+2. Open a terminal and navigate to an empty working directory where you will download the code and data. Clone the GitHub repository and enter it:
 
 3. Initialize the conda environment for the repository and install all necessary dependencies:
 
 ```
+cd [path_to_empty_working_directory]
 git clone https://github.com/stanfordnmbl/opencap-fshd-dm-analysis.git
 cd opencap-fshd-dm-analysis
 conda env create -f environment.yml -n opensim-nmd
@@ -39,6 +40,7 @@ Move the `datadir` directory to be contained inside the same parent directory as
 At this point, your working directory should be organized as follows:
 
 ```
+[working_directory]
 ├── datadir
 │   ├── README.md
 │   ├── feature_key.csv
@@ -78,8 +80,7 @@ To reduce the verbosity of the terminal output,  add the `--quiet` flag.
 The code for figure generation code is in Jupyter notebooks. Use these commands to launch Jupyter Lab.
 
 ```
-cd ..
-cd figure_generation
+cd ../figure_generation
 jupyter lab
 ```
 At this point, you will be able to select individual notebooks and run all cells to generate our figures. 

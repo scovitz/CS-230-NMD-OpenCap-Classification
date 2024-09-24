@@ -17,6 +17,7 @@ dependencies:
   - shap
   - statsmodels
   - tqdm
+  - zenodo_get
   - bioconda::snakemake
   - opensim-org::opensim=4.4
 

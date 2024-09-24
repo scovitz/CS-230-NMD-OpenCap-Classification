@@ -28,11 +28,16 @@ cd ..
 
 ## Data Access
 
-To access the dataset, go to https://doi.org/10.5281/zenodo.13788592 and press "Download All"
+The dataset is hosted on Zenodo: https://doi.org/10.5281/zenodo.13788592
 
-Unzip the downloaded file and rename the unzipped folder to `datadir`.
+Data can be downloaded through the browser, or through the command line as follows:
 
-Move the `datadir` directory to be contained inside the same parent directory as the code repository `opencap-fshd-dm-analysis`.
+```
+mkdir datadir
+cd datadir
+zenodo_get -d 10.5281/zenodo.13788592
+cd ..
+```
 
 At this point, your working directory should be organized as follows:
 

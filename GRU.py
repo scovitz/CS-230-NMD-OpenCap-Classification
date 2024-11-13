@@ -16,7 +16,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import r2_score
 import spacy
-import pickle as pkl
+import pickle as pkl #Automatically in the python environment
 import requests
 
 config = {
@@ -163,9 +163,9 @@ true_values = y_test[:]
 
 r2_score(true_values, predictions)
 
-pkl.dump(scaler, open('/kaggle/working/scaler', 'wb')) # saving the scaler
+pkl.dump(scaler, open('scaler.pkl', 'wb'))  # Saves to the current working directory
 
-scaler = pkl.load(open('/kaggle/working/scaler', 'rb'))
+scaler = pkl.load(open('scaler.pkl', 'rb'))
 
 concatenated_values = np.concatenate((x_test[0].reshape(1, -1), predictions[0].reshape(1, -1)), axis=1)
 

@@ -18,6 +18,7 @@ from sklearn.metrics import r2_score
 import spacy
 import pickle as pkl #Automatically in the python environment
 import requests
+import csv
 
 config = {
     'data_path': 'data.csv',
@@ -32,58 +33,69 @@ config = {
 np.random.seed(config['random_seed'])
 torch.random.manual_seed(config['random_seed'])
 
-# Load the dataset, this is currently Amazon's stockmarket data, change this to our data
-url = 'https://www.dropbox.com/scl/fi/5zgutd3y6sm5jwuak60rp/data.csv?rlkey=2mivltwxvmx3rtjfzhltp0e09&dl=1'
-response = requests.get(url)
 
 # Save the file as 'data.csv'
-with open('data.csv', 'wb') as file:
-    file.write(response.content)
+with open('class_info.csv', 'r') as file:
 
-df = pd.read_csv(config['data_path'])
-df
+    csv_reader = csv.reader(file)
 
-# Data Preprocessing
-df.drop(columns=['Open', 'High', 'Low', 'Adj Close', 'Volume'], inplace=True)
-df
+    for row in csv_reader:
+        print(row)
 
-dates = df['Date'].values
-close_prices = df['Close'].values
+# Load the CSV data into a pandas DataFrame
+df = pd.read_csv('class_info.csv')
+Class = df['Class'].values
+ID = df['ID'].values # Don't put into the model
 
-data_dict = {}
-for idx, date in enumerate(dates[7:], start=7):
-    data_dict[date] = {
-            'target': close_prices[idx],
-            't-1': close_prices[idx-1],
-            't-2': close_prices[idx-2],
-            't-3': close_prices[idx-3],
-            't-4': close_prices[idx-4],
-            't-5': close_prices[idx-5],
-            't-6': close_prices[idx-6],
-            't-7': close_prices[idx-7],
-        }
-df = pd.DataFrame.from_dict(data_dict, orient='index')
+df2 = pd.read_csv('video_features.csv')
+mwrt_ankle_elev = df2['10mwrt_ankle_elev'].values
+mwrt_com_sway = df2['10mwrt_com_sway'].values
+mwrt_mean_max_ka = df2['10mwrt_mean_max_ka'].values
+mwrt_mean_ptp_hip_add = df2['10mwrt_mean_ptp_hip_add'].values
+mwrt_speed = df2['10mwrt_speed'].values
+mwrt_stride_len = df2['10mwrt_stride_len'].values
+mwrt_stride_time = df2['10mwrt_stride_time'].values
+mwrt_trunk_lean = df2['10mwrt_trunk_lean'].values
+mwt_ankle_elev = df2['10mwt_ankle_elev'].values
+mwt_com_sway = df2['10mwt_com_sway'].values
+mwt_mean_max_ka = df2['10mwt_mean_max_ka'].values
+mwt_mean_ptp_hip_add = df2['10mwt_mean_ptp_hip_add'].values
+mwt_speed = df2['10mwt_speed'].values
+mwt_stride_len = df2['10mwt_stride_len'].values
+mwt_stride_time = df2['10mwt_stride_time'].values
+mwt_trunk_lean = df2['10mwt_trunk_lean'].values
+xsts_lean_max = df2['5xsts_lean_max'].values
+xsts_stance_width = df2['5xsts_stance_width'].values
+xsts_time_5 = df2['5xsts_time_5'].values
+arm_rom_rw_area = df2['arm_rom_rw_area'].values
+brooke_max_ea_at_max_min_sa = df2['brooke_max_ea_at_max_min_sa'].values
+brooke_max_mean_sa = df2['brooke_max_mean_sa'].values
+brooke_max_min_sa = df2['brooke_max_min_sa'].values
+brooke_max_sa_ea_ratio = df2['brooke_max_sa_ea_ratio'].values
+curls_max_mean_ea = df2['curls_max_mean_ea'].values
+curls_min_max_ea = df2['curls_min_max_ea'].values
+jump_max_com_vel = df2['jump_max_com_vel'].values
+toe_stand_int_com_elev = df2['toe_stand_int_com_elev'].values
+toe_stand_int_mean_heel_elev = df2['toe_stand_int_mean_heel_elev'].values
+toe_stand_int_trunk_lean = df2['toe_stand_int_trunk_lean'].values
+toe_stand_mean_int_aa = df2['toe_stand_mean_int_aa'].values
+tug_cone_time = df2['tug_cone_time'].values
+tug_cone_turn_avel = df2['tug_cone_turn_avel'].values
+tug_cone_turn_max_avel = df2['tug_cone_turn_max_avel'].values
 
-df = df[['t-7', 't-6', 't-5', 't-4', 't-3', 't-2', 't-1', 'target']]
-df
-
-scaler = MinMaxScaler(feature_range=(-1, 1))
-df[['t-7', 't-6', 't-5', 't-4', 't-3', 't-2', 't-1', 'target']] = scaler.fit_transform(df[['t-7', 't-6', 't-5', 't-4', 't-3', 't-2', 't-1', 'target']])
-df
-
-x = df[['t-7', 't-6', 't-5', 't-4', 't-3', 't-2', 't-1']].values
-y = df['target'].values
+x = df2[['10mwrt_ankle_elev', '10mwrt_com_sway', '10mwrt_mean_max_ka', '10mwrt_mean_ptp_hip_add', '10mwrt_speed', '10mwrt_stride_len', '10mwrt_stride_time']].values
+y = df['Class'].values
 
 # Splitting the dataset into test and training sets
 
 x_train, x_rem, y_train, y_rem = train_test_split(x, y, train_size=config['train_size'], shuffle=True)
 x_test, x_val, y_test, y_val = train_test_split(x_rem, y_rem, train_size=0.5, shuffle=True)
 
-# Make a sliding window of size 7 over the dataset
+# Make a sliding window of size Not 7 but 1 over the dataset
 
 class StockDataset(Dataset):
     def __init__(self, values, targets):
-        self.values = values.reshape(-1, 7, 1)
+        self.values = values.reshape(-1, 1, 1)
         self.labels = np.array(targets).reshape(-1, 1)
     def __len__(self):
         return self.values.shape[0]
@@ -95,9 +107,9 @@ test_dataset = StockDataset(x_test, y_test)
 val_dataset = StockDataset(x_val, y_val)
 
 # To iterate over the data we need to create a data loader
-train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=True)
-val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], shuffle=True)
-test_loader = DataLoader(test_dataset, batch_size=config['batch_size'], shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
+val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
+test_loader = DataLoader(test_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
 
 # Dropout layer for regularization
 
@@ -117,15 +129,16 @@ class Model(nn.Module):
 
 model = Model().to(config['device'])
 
-model(torch.randn(32, 7, 1).to(config['device'])).shape
+model(torch.randn(32, 1, 1).to(config['device'])).shape
 
 optimizer = optim.Adam(model.parameters(), lr=config['learning_rate'])
 
-criterion = nn.MSELoss()
+criterion = nn.BCEWithLogitsLoss() #Appropriate for binary classification
 
 def train_loop(dataloader, model, loss_fn, optimizer, epoch_num):
     num_points = len(dataloader.dataset)
-    for batch, (features, labels) in enumerate(dataloader):        
+    for batch, (features, labels) in enumerate(dataloader):
+        print(f"Batch {batch}, Features shape: {features.shape}")
         # Compute prediction and loss
         pred = model(features)
         loss = loss_fn(pred, labels)
@@ -138,6 +151,7 @@ def train_loop(dataloader, model, loss_fn, optimizer, epoch_num):
         if batch % 100 == 0:
             loss, current = loss.item(), batch * len(features)
             print(f"\r Epoch {epoch_num} - loss: {loss:>7f}  [{current:>5d}/{num_points:>5d}]", end=" ")
+
 
 def test_loop(dataloader, model, loss_fn, epoch_num, name):
     num_points = len(dataloader.dataset)
@@ -174,7 +188,7 @@ scaler.inverse_transform(concatenated_values) # the last value is the predicted 
 def predict_next_day(previous_days):
     raw_values = np.concatenate((previous_days, [0]), axis=0).reshape(1, -1)
     scaled_values = scaler.transform(raw_values)
-    scaled_input = scaled_values.squeeze()[:-1].reshape(-1, 7, 1)
+    scaled_input = scaled_values.squeeze()[:-1].reshape(-1, 1, 1)
     output = model(Tensor(scaled_input).to(config['device'])).cpu().detach().numpy()
     scaled_values = np.concatenate((previous_days.reshape(1,-1), output), axis=1)
     raw_values = scaler.inverse_transform(scaled_values)

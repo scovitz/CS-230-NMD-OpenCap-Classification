@@ -22,7 +22,7 @@ import csv
 
 config = {
     'data_path': 'data.csv',
-    'batch_size': 64,
+    'batch_size': 32,
     'device': 'cuda', # mps for mac m1, cuda for gpu-enabled devices
     'learning_rate': 0.01,
     'num_epochs': 100,
@@ -88,10 +88,29 @@ y = df['Class'].values
 
 # Splitting the dataset into test and training sets
 
-x_train, x_rem, y_train, y_rem = train_test_split(x, y, train_size=config['train_size'], shuffle=True)
+# First Split: 80% train, 20% remaining
+train_size_exact = 103
+x_train, x_rem, y_train, y_rem = train_test_split(x, y, train_size=train_size_exact, shuffle=True)
+
+# Debug: Print sizes after the first split
+print("Before split:")
+print("x:", x.shape)
+print("y:", y.shape)
+print("After first split:")
+print("x_train size:", x_train.shape)  # Should be ~103
+print("x_rem size:", x_rem.shape)      # Should be ~26
+print("y_train size:", y_train.shape)  # Should be ~103
+print("y_rem size:", y_rem.shape)      # Should be ~26
+
+# Second Split: Remaining 20% split into 50% validation, 50% test
 x_test, x_val, y_test, y_val = train_test_split(x_rem, y_rem, train_size=0.5, shuffle=True)
 
-# Make a sliding window of size Not 7 but 1 over the dataset
+# Debug: Print sizes after the second split
+print("After second split:")
+print("x_val size:", x_val.shape)      # Should be ~13
+print("x_test size:", x_test.shape)    # Should be ~13
+print("y_val size:", y_val.shape)      # Should be ~13
+print("y_test size:", y_test.shape)    # Should be ~13
 
 class StockDataset(Dataset):
     def __init__(self, values, targets):
@@ -106,10 +125,15 @@ train_dataset = StockDataset(x_train, y_train)
 test_dataset = StockDataset(x_test, y_test)
 val_dataset = StockDataset(x_val, y_val)
 
+print(f"x_train size: {len(x_train)}, y_train size: {len(y_train)}")
+print(f"x_val size: {len(x_val)}, y_val size: {len(y_val)}")
+print(f"x_test size: {len(x_test)}, y_test size: {len(y_test)}")
+
+
 # To iterate over the data we need to create a data loader
-train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
-val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
-test_loader = DataLoader(test_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=True)
+train_loader = DataLoader(train_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=False)
+val_loader = DataLoader(val_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=False)
+test_loader = DataLoader(test_dataset, batch_size=config['batch_size'], shuffle=True, drop_last=False)
 
 # Dropout layer for regularization
 

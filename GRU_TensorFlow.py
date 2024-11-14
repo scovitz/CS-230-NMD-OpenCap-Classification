@@ -113,9 +113,6 @@ model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_val, y
 # Evaluate the model
 model.evaluate(X_test, y_test)
 
-# Predictions
-predictions = model.predict(X_val)
-
 # Plot the accuracy and loss
 
 # Training history

@@ -1,7 +1,9 @@
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import GRU, Dense, Dropout
+from sklearn.model_selection import train_test_split
 import pandas as pd
+import matplotlib.pyplot as plt
 
 # Load the CSV data into a pandas DataFrame
 df = pd.read_csv('class_info.csv')
@@ -44,11 +46,15 @@ tug_cone_time = df2['tug_cone_time'].values
 tug_cone_turn_avel = df2['tug_cone_turn_avel'].values
 tug_cone_turn_max_avel = df2['tug_cone_turn_max_avel'].values
 
-x = df2[['10mwrt_ankle_elev', '10mwrt_com_sway', '10mwrt_mean_max_ka', '10mwrt_mean_ptp_hip_add', '10mwrt_speed', '10mwrt_stride_len', '10mwrt_stride_time','10mwrt_trunk_lean','10mwt_ankle_elev',...
-'10mwt_com_sway','10mwt_mean_max_ka','10mwt_mean_ptp_hip_add', '10mwt_speed','10mwt_stride_len','10mwt_stride_time','10mwt_trunk_lean','5xsts_lean_max',...
-'5xsts_stance_width','5xsts_time_5','arm_rom_rw_area','brooke_max_ea_at_max_min_sa','brooke_max_mean_sa','brooke_max_min_sa','brooke_max_sa_ea_ratio',...
-'curls_max_mean_ea','curls_min_max_ea','jump_max_com_vel','toe_stand_int_com_elev','toe_stand_int_mean_heel_elev','toe_stand_int_trunk_lean','toe_stand_mean_int_aa',...
-'tug_cone_time','tug_cone_turn_avel','tug_cone_turn_max_avel']].values
+x = df2[['10mwrt_ankle_elev', '10mwrt_com_sway', '10mwrt_mean_max_ka', '10mwrt_mean_ptp_hip_add', '10mwrt_speed', 
+         '10mwrt_stride_len', '10mwrt_stride_time', '10mwrt_trunk_lean', '10mwt_ankle_elev', '10mwt_com_sway', 
+         '10mwt_mean_max_ka', '10mwt_mean_ptp_hip_add', '10mwt_speed', '10mwt_stride_len', '10mwt_stride_time', 
+         '10mwt_trunk_lean', '5xsts_lean_max', '5xsts_stance_width', '5xsts_time_5', 'arm_rom_rw_area', 
+         'brooke_max_ea_at_max_min_sa', 'brooke_max_mean_sa', 'brooke_max_min_sa', 'brooke_max_sa_ea_ratio', 
+         'curls_max_mean_ea', 'curls_min_max_ea', 'jump_max_com_vel', 'toe_stand_int_com_elev', 
+         'toe_stand_int_mean_heel_elev', 'toe_stand_int_trunk_lean', 'toe_stand_mean_int_aa', 'tug_cone_time', 
+         'tug_cone_turn_avel', 'tug_cone_turn_max_avel']].values
+
 y = df['Class'].values
 
 # First Split: 80% train, 20% remaining
@@ -60,18 +66,24 @@ print("Before split:")
 print("x:", x.shape)
 print("y:", y.shape)
 print("After first split:")
-print("x_train size:", x_train.shape)  # Should be ~129
-print("x_rem size:", x_rem.shape)      # Should be ~40
+print("x_train size:", X_train.shape)  # Should be ~129
+print("x_rem size:", X_rem.shape)      # Should be ~40
 print("y_train size:", y_train.shape)  # Should be ~129
 print("y_rem size:", y_rem.shape)      # Should be ~40
 
 # Second Split: Remaining 20% split into 50% validation, 50% test
 X_test, X_val, y_test, y_val = train_test_split(X_rem, y_rem, train_size=0.5, shuffle=True)
 
+
+X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
+X_val = X_val.reshape((X_val.shape[0], 1, X_val.shape[1]))
+X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
+
 # Debug: Print sizes after the second split
 print("After second split:")
-print("x_val size:", x_val.shape)      # Should be ~20
-print("x_test size:", x_test.shape)    # Should be ~20
+print("x_val size:", X_val.shape)      # Should be ~20
+print("x_train size:", X_train.shape)  # Should be ~129
+print("x_test size:", X_test.shape)    # Should be ~20
 print("y_val size:", y_val.shape)      # Should be ~20
 print("y_test size:", y_test.shape)    # Should be ~20
 
@@ -80,8 +92,8 @@ print("y_test size:", y_test.shape)    # Should be ~20
 model = Sequential()
 
 # First GRU layer
-model.add(GRU(units=64, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
-model.add(Dropout(0.2))  # Dropout for regularization
+model.add(GRU(units=32, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])))
+model.add(Dropout(0.1))  # Dropout for regularization
 
 # Second GRU layer (optional)
 model.add(GRU(units=64, return_sequences=False))
@@ -96,10 +108,33 @@ model.add(Dense(units=1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 
 # Train the model
-model.fit(X_train, y_train, epochs=20, batch_size=64, validation_data=(X_val, y_val))
+model.fit(X_train, y_train, epochs=100, batch_size=32, validation_data=(X_val, y_val))
 
 # Evaluate the model
 model.evaluate(X_test, y_test)
 
 # Predictions
-predictions = model.predict(X_new)
+predictions = model.predict(X_val)
+
+# Plot the accuracy and loss
+
+# Training history
+history = model.fit(X_train, y_train, epochs=20, batch_size=64, validation_data=(X_val, y_val))
+
+# Plot training & validation accuracy values
+plt.plot(history.history['accuracy'])
+plt.plot(history.history['val_accuracy'])
+plt.title('Model accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy')
+plt.legend(['Train', 'Validation'], loc='upper left')
+plt.show()
+
+# Plot training & validation loss values
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('Model loss')
+plt.xlabel('Epoch')
+plt.ylabel('Loss')
+plt.legend(['Train', 'Validation'], loc='upper left')
+plt.show()

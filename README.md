@@ -1,4 +1,5 @@
-CS 230 Final Project -- Disease classification of neuromuscular disorders based on kinematic data from video capture
+Disease classification of neuromuscular disorders based on kinematic data from video capture
  - 
- - RNNs for neuromuscular disorder classification
+ - Sydney Covitz, Ashley Brown, Kristen Steudel
+ - RNNs for binary classification 
    

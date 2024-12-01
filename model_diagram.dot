@@ -1,0 +1,17 @@
+digraph G {
+    // Define nodes (blocks)
+    "Input Layer" [shape=box, label="Input Layer"];
+    "Dense Embedding" [shape=box, label="Dense Embedding\n(64 Units, L2)"];
+    "Transformer Block" [shape=box, label="Transformer Block\n(4 Heads, FF Dim=128, Dropout=0.3)"];
+    "Global Avg Pooling" [shape=box, label="Global Avg Pooling"];
+    "Dropout" [shape=box, label="Dropout\n(rate=0.5)"];
+    "Output Layer" [shape=box, label="Output Layer\n(Sigmoid)"];
+
+    // Define edges (arrows between blocks)
+    "Input Layer" -> "Dense Embedding";
+    "Dense Embedding" -> "Transformer Block";
+    "Transformer Block" -> "Global Avg Pooling";
+    "Global Avg Pooling" -> "Dropout";
+    "Dropout" -> "Output Layer";
+
+}

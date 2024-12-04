@@ -1,4 +1,4 @@
-Disease classification of neuromuscular disorders based on kinematic data from video capture
+Disease Identification for patients with neuromuscular disorders based on kinematic data from video capture
  - 
  - Developers: Sydney Covitz, Ashley Brown, Kristen Steudel
  - RNNs for binary classification (disease vs. no disease), (DM vs FSHD)
